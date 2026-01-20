@@ -1,20 +1,21 @@
+"use client";
 import React from "react";
-import PropTypes from "prop-types";
 import { MoonLoader } from "react-spinners";
+import { motion } from "framer-motion";
 
 const CustomButton = ({
   label,
-  disabled,
-  ariaLabel,
-  buttonStyle,
-  labelStyle,
-  buttonColor,
+  disabled = false,
+  ariaLabel = "",
+  buttonStyle = "",
+  labelStyle = "",
+  buttonColor = "",
   onClick,
-  loading,
+  loading = false,
 }: {
   label: string;
-  disabled: boolean;
-  ariaLabel: string;
+  disabled?: boolean;
+  ariaLabel?: string;
   buttonStyle?: string;
   labelStyle?: string;
   buttonColor?: string;
@@ -22,7 +23,9 @@ const CustomButton = ({
   loading?: boolean;
 }) => {
   return (
-    <button
+    <motion.button
+      whileHover={disabled || loading ? {} : { scale: 1.02 }}
+      whileTap={disabled || loading ? {} : { scale: 0.98 }}
       onClick={onClick}
       disabled={disabled || loading}
       className={`relative rounded-full p-1 bg-gradient-to-b from-[#9933CC] to-[#1140A4] cursor-pointer 
@@ -45,28 +48,25 @@ const CustomButton = ({
           </div>
         )}
       </div>
-    </button>
+
+      {/* Animated glow effect on hover */}
+      {!disabled && !loading && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileHover={{ opacity: 1 }}
+          className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -skew-x-12 translate-x-[-100%]"
+          animate={{
+            translateX: ["100%", "-100%"],
+          }}
+          transition={{
+            duration: 1.5,
+            repeat: Infinity,
+            ease: "linear",
+          }}
+        />
+      )}
+    </motion.button>
   );
-};
-
-CustomButton.propTypes = {
-  label: PropTypes.string.isRequired,
-  onClick: PropTypes.func,
-  loading: PropTypes.bool,
-  disabled: PropTypes.bool,
-  ariaLabel: PropTypes.string,
-  buttonStyle: PropTypes.string,
-  labelStyle: PropTypes.string,
-  buttonColor: PropTypes.string,
-};
-
-CustomButton.defaultProps = {
-  loading: false,
-  disabled: false,
-  ariaLabel: "",
-  buttonStyle: "",
-  labelStyle: "text-gray-950 !important",
-  buttonColor: "",
 };
 
 export default CustomButton;
